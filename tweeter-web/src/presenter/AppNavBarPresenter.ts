@@ -1,4 +1,5 @@
 import { AuthToken } from "tweeter-shared";
+import { LogoutService } from "../model.service/LogoutService";
 
 export interface AppNavBarView {
     displayInfoMessage: (message: string, duration: number, bootstrapClasses?: string | undefined) => string
@@ -11,16 +12,18 @@ export interface AppNavBarView {
 
 export class AppNavBarPresenter{
     private view: AppNavBarView;
+    private logoutService: LogoutService;
 
     public constructor(view:AppNavBarView) {
-        this.view = view
+        this.view = view;
+        this.logoutService = new LogoutService();
     }
 
     public async logOut() {
         const loggingOutToastId = this.view.displayInfoMessage("Logging Out...", 0);
         try {
           const authToken = this.view.getAuthToken();
-          await this.logout(authToken!);
+          await this.logoutService.logout(authToken!);
     
           this.view.deleteMessage(loggingOutToastId);
           this.view.clearUserInfo();
@@ -30,11 +33,6 @@ export class AppNavBarPresenter{
             `Failed to log user out because of exception: ${error}`,
           );
         }
-      };
-    
-      public async logout (authToken: AuthToken): Promise<void> {
-        // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-        await new Promise((res) => setTimeout(res, 1000));
       };
 
 }

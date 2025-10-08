@@ -17,6 +17,9 @@ import { useUserInfo } from "./components/userInfo/UserInfoHooks";
 import { FolloweePresenter } from "./presenter/FolloweePresenter";
 import { UserItemView } from "./presenter/UserItemPresenter";
 import { FollowerPresenter } from "./presenter/FollowerPresenter";
+import { StatusItemView } from "./presenter/StatusItemPresenter";
+import { FeedPresenter } from "./presenter/FeedPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -42,41 +45,12 @@ const App = () => {
 const AuthenticatedRoutes = () => {
   const { displayedUser } = useUserInfo();
 
-  
-
-  const loadMoreFeedItems = async (
-      authToken: AuthToken,
-      userAlias: string,
-      pageSize: number,
-      lastItem: Status | null
-    ): Promise<[Status[], boolean]> => {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    };
-
-    const loadMoreStoryItems = async (
-        authToken: AuthToken,
-        userAlias: string,
-        pageSize: number,
-        lastItem: Status | null
-      ): Promise<[Status[], boolean]> => {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-      };
-  
-    const getUser = async (
-      authToken: AuthToken,
-      alias: string
-    ): Promise<User | null> => {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.findUserByAlias(alias);
-    };
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Navigate to={`/feed/${displayedUser!.alias}`} />} />
-        <Route path="feed/:displayedUser" element={<StatusItemScroller key={`feed-${displayedUser!.alias}`} itemDescription="feed" featurePath="/feed" loadMore={loadMoreFeedItems}/>} />
-        <Route path="story/:displayedUser" element={<StatusItemScroller key={`story-${displayedUser!.alias}`} itemDescription="story" featurePath="/story" loadMore={loadMoreStoryItems}/>} />
+        <Route path="feed/:displayedUser" element={<StatusItemScroller key={`feed-${displayedUser!.alias}`} featurePath="/feed" presenterFactory={(view: StatusItemView) => new FeedPresenter(view)}/>} />
+        <Route path="story/:displayedUser" element={<StatusItemScroller key={`story-${displayedUser!.alias}`} featurePath="/story" presenterFactory={(view: StatusItemView) => new StoryPresenter(view)} />} />
         <Route path="followees/:displayedUser" element={<UserItemScroller key={`followees-${displayedUser!.alias}`} featurePath="/followees" presenterFactory={(view:UserItemView) => new FolloweePresenter(view)}/>} />
         <Route path="followers/:displayedUser" element={<UserItemScroller key={`followers-${displayedUser!.alias}`} featurePath="/followers" presenterFactory={(view:UserItemView) => new FollowerPresenter(view)}/>} />
         <Route path="logout" element={<Navigate to="/login" />} />

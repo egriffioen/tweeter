@@ -26,10 +26,6 @@ const Login = (props: Props) => {
     updateUserInfo: updateUserInfo,
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
-    getAlias:() => alias,
-    getPassword:() => password,
-    getRememberMe:() => rememberMe,
-    getOriginalUrl:() => props.originalUrl,
     setIsLoading:setIsLoading
   }
 
@@ -39,11 +35,11 @@ const Login = (props: Props) => {
   }
 
   const checkSubmitButtonStatus = (): boolean => {
-    return presenterRef.current!.checkSubmitButtonStatus();
+    return !alias || !password;
   };
 
   const doLogin = async () => {
-    await presenterRef.current!.doLogin()
+    await presenterRef.current!.doLogin(alias, password, rememberMe, props.originalUrl!);
   };
 
   const inputFieldFactory = () => {

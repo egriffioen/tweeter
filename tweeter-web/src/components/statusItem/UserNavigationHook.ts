@@ -19,7 +19,14 @@ export const useUserNavigation = (featurePath: string) => {
       const presenter = new UserNavigationPresenter(listener)
 
     const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
-        presenter.navigateToUser(event, authToken!, displayedUser!, featurePath);
+        event.preventDefault();
+        const alias = extractAlias(event.target.toString());
+        await presenter.navigateToUser(authToken!, displayedUser!, featurePath, alias)
+    };
+
+    const extractAlias = (value: string): string => {
+        const index = value.indexOf("@");
+        return value.substring(index);
     };
 
     return {navigateToUser}

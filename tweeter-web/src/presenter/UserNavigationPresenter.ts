@@ -16,11 +16,8 @@ export class UserNavigationPresenter {
         this.userService = new UserService()
     }
 
-    public async navigateToUser (event: React.MouseEvent, authToken:AuthToken, displayedUser:User, featurePath:string): Promise<void> {
-            event.preventDefault();
-    
+    public async navigateToUser (authToken:AuthToken, displayedUser:User, featurePath:string, alias:string): Promise<void> {
             try {
-            const alias = this.extractAlias(event.target.toString());
     
             const toUser = await this.userService.getUser(authToken!, alias);
     
@@ -37,8 +34,4 @@ export class UserNavigationPresenter {
             }
         };
     
-    protected extractAlias = (value: string): string => {
-            const index = value.indexOf("@");
-            return value.substring(index);
-    }
 }

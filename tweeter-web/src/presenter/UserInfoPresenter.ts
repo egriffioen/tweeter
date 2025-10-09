@@ -1,4 +1,4 @@
-import { User, AuthToken, FakeData } from "tweeter-shared";
+import { User, AuthToken } from "tweeter-shared";
 import { UserInfoService } from "../model.service/UserInfoService";
 
 export interface UserInfoView {
@@ -71,25 +71,10 @@ export class UserInfoPresenter {
         }
       };
     
-      
-    
-      public switchToLoggedInUser (event: React.MouseEvent, currentUser:User): void {
-        event.preventDefault();
-        this.view.setDisplayedUser(currentUser!);
-        this.view.navigate(`${this.getBaseUrl()}/${currentUser!.alias}`);
-      };
-    
-      protected getBaseUrl (): string {
-        const segments = location.pathname.split("/@");
-        return segments.length > 1 ? segments[0] : "/";
-      };
-    
       public async followDisplayedUser (
-        event: React.MouseEvent,
         displayedUser: User,
         authToken: AuthToken
       ): Promise<void> {
-        event.preventDefault();
     
         var followingUserToast = "";
     
@@ -120,11 +105,9 @@ export class UserInfoPresenter {
     
     
       public async unfollowDisplayedUser (
-        event: React.MouseEvent,
         displayedUser: User,
         authToken: AuthToken
       ): Promise<void> {
-        event.preventDefault();
     
         var unfollowingUserToast = "";
     

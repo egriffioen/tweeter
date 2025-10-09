@@ -2,6 +2,7 @@ import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
 import { useNavigate } from "react-router-dom";
 import { UserNavigationView, UserNavigationPresenter } from "../../presenter/UserNavigationPresenter";
+import { useRef } from "react";
 
 
 
@@ -16,12 +17,16 @@ export const useUserNavigation = (featurePath: string) => {
         setDisplayedUser: setDisplayedUser,
         displayErrorMessage: displayErrorMessage,
     }
-      const presenter = new UserNavigationPresenter(listener)
+    
+    const presenterRef = useRef<UserNavigationPresenter|null>(null)
+            if (!presenterRef.current) {
+                presenterRef.current = new UserNavigationPresenter(listener)
+    }
 
     const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
         event.preventDefault();
         const alias = extractAlias(event.target.toString());
-        await presenter.navigateToUser(authToken!, displayedUser!, featurePath, alias)
+        await presenterRef.current!.navigateToUser(authToken!, displayedUser!, featurePath, alias)
     };
 
     const extractAlias = (value: string): string => {

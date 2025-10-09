@@ -23,6 +23,16 @@ export class UserInfoPresenter {
         this.userInfoService = new UserInfoService()
     }
 
+    public switchToLoggedInUser (currentUser:User): void {
+      this.view.setDisplayedUser(currentUser!);
+      this.view.navigate(`${this.getBaseUrl()}/${currentUser!.alias}`);
+    };
+
+    protected getBaseUrl (): string {
+      const segments = location.pathname.split("/@");
+      return segments.length > 1 ? segments[0] : "/";
+    };
+
     public async setIsFollowerStatus (
         authToken: AuthToken,
         currentUser: User,

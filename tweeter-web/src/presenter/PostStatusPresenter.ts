@@ -19,9 +19,7 @@ export class PostStatusPresenter {
         this.postStatusService = new PostStatusService()
     }
 
-    public async submitPost (event: React.MouseEvent, post:string, currentUser:User, authToken:AuthToken) {
-        event.preventDefault();
-    
+    public async submitPost (post:string, currentUser:User, authToken:AuthToken) {
         var postingStatusToastId = "";
     
         try {
@@ -46,15 +44,5 @@ export class PostStatusPresenter {
           this.view.setIsLoading(false);
         }
       };
-
-    
-      public clearPost (event: React.MouseEvent) {
-        event.preventDefault();
-        this.view.setPost("");
-      };
-    
-    public checkButtonStatus = (post: string, currentUser: User | null, authToken: AuthToken | null): boolean => {
-        return !post.trim() || !authToken || !currentUser;
-    };
 
 }

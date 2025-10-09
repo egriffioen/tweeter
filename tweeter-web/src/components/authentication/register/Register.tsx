@@ -1,6 +1,6 @@
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
@@ -33,29 +33,29 @@ const Register = () => {
     setImageFileExtension: setImageFileExtension
     }
   
-  const presenter = new RegisterPresenter(listener)
-
+  const presenterRef = useRef<RegisterPresenter|null>(null)
+      if (!presenterRef.current) {
+          presenterRef.current = new RegisterPresenter(listener)
+  }
+  
   const checkSubmitButtonStatus = (): boolean => {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
-    );
+    return presenterRef.current!.checkSubmitButtonStatus(firstName, lastName, alias, password, imageUrl, imageFileExtension)
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    presenter.registerOnEnter(event, firstName, lastName, alias, password, imageUrl, imageFileExtension, imageBytes, rememberMe)
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+      presenterRef.current!.doRegister(firstName, lastName, alias, password, imageBytes, imageFileExtension, rememberMe);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    presenter.handleFileChange(event)
+    const file = event.target.files?.[0];
+    presenterRef.current!.handleImageFile(file);
   };
 
+
   const doRegister = async () => {
-    await presenter.doRegister(firstName, lastName, alias, password, imageBytes, imageFileExtension, rememberMe)
+    presenterRef.current!.doRegister(firstName, lastName, alias, password, imageBytes, imageFileExtension, rememberMe);
   };
 
   const inputFieldFactory = () => {

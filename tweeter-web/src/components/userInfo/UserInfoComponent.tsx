@@ -1,7 +1,6 @@
 import "./UserInfoComponent.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "./UserInfoHooks";
 import { UserInfoView, UserInfoPresenter } from "../../presenter/UserInfoPresenter";
@@ -31,42 +30,40 @@ const UserInfo = () => {
     setDisplayedUser: setDisplayedUser
   }
     
-    const presenter = new UserInfoPresenter(listener)
+  const presenterRef = useRef<UserInfoPresenter|null>(null)
+          if (!presenterRef.current) {
+              presenterRef.current = new UserInfoPresenter(listener)
+  }
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
   }
 
   useEffect(() => {
-    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-    presenter.setNumbFollowees(authToken!, displayedUser!);
-    presenter.setNumbFollowers(authToken!, displayedUser!);
+    presenterRef.current!.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
+    presenterRef.current!.setNumbFollowees(authToken!, displayedUser!);
+    presenterRef.current!.setNumbFollowers(authToken!, displayedUser!);
   }, [displayedUser]);
 
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
     event.preventDefault();
-    setDisplayedUser(currentUser!);
-    navigate(`${getBaseUrl()}/${currentUser!.alias}`);
+    presenterRef.current!.switchToLoggedInUser(currentUser!);
   };
 
-  const getBaseUrl = (): string => {
-    const segments = location.pathname.split("/@");
-    return segments.length > 1 ? segments[0] : "/";
-  };
 
   const followDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.followDisplayedUser(displayedUser!, authToken!)
+    presenterRef.current!.followDisplayedUser(displayedUser!, authToken!)
   };
 
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.unfollowDisplayedUser(displayedUser!, authToken!)
+    presenterRef.current!.unfollowDisplayedUser(displayedUser!, authToken!)
   };
 
   

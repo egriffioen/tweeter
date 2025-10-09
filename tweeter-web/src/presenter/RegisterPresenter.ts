@@ -32,18 +32,7 @@ export class RegisterPresenter {
           !imageFileExtension
         );
       };
-    
-      public registerOnEnter (event: React.KeyboardEvent<HTMLElement>, firstName:string, lastName:string, alias:string, password:string, imageUrl:string, imageFileExtension:string, imageBytes:Uint8Array, rememberMe:boolean) {
-        if (event.key == "Enter" && !this.checkSubmitButtonStatus(firstName, lastName, alias, password, imageUrl, imageFileExtension)) {
-          this.doRegister(firstName, lastName, alias, password, imageBytes, imageFileExtension, rememberMe);
-        }
-      };
-    
-      public handleFileChange (event: ChangeEvent<HTMLInputElement>) {
-        const file = event.target.files?.[0];
-        this.handleImageFile(file);
-      };
-    
+      
       public handleImageFile (file: File | undefined) {
         if (file) {
           this.view.setImageUrl(URL.createObjectURL(file));
@@ -75,8 +64,8 @@ export class RegisterPresenter {
           this.view.setImageBytes(new Uint8Array());
         }
       };
-    
-      public getFileExtension (file: File): string | undefined {
+
+      protected getFileExtension (file: File): string | undefined {
         return file.name.split(".").pop();
       };
     

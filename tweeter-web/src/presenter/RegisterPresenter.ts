@@ -2,10 +2,10 @@ import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
 import { User, AuthToken } from "tweeter-shared";
 import { RegisterService } from "../model.service/RegisterService";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View{
     updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void
-    displayErrorMessage: (message: string, bootstrapClasses?: string | undefined) => string
     navigate:(path: string) => void;
     setIsLoading(isLoading: boolean): void;
     setImageUrl: (value: React.SetStateAction<string>) => void
@@ -13,13 +13,12 @@ export interface RegisterView {
     setImageFileExtension: (value: React.SetStateAction<string>) => void
 }
 
-export class RegisterPresenter {
-    private view: RegisterView;
+export class RegisterPresenter extends Presenter<RegisterView>{
     private registerService: RegisterService;
 
     public constructor(view: RegisterView) {
-        this.view = view;
-        this.registerService = new RegisterService()
+      super(view)
+      this.registerService = new RegisterService()
     }
 
     public checkSubmitButtonStatus(firstName:string, lastName:string, alias:string, password:string, imageUrl:string, imageFileExtension:string): boolean {
@@ -70,7 +69,7 @@ export class RegisterPresenter {
       };
     
       public async doRegister (firstName:string, lastName:string, alias:string, password:string, imageBytes:Uint8Array, imageFileExtension:string, rememberMe:boolean) {
-        try {
+        await this.doFailureReportingOperation(async () => {
           this.view.setIsLoading(true);
     
           const [user, authToken] = await this.registerService.register(
@@ -84,13 +83,9 @@ export class RegisterPresenter {
     
           this.view.updateUserInfo(user, user, authToken, rememberMe);
           this.view.navigate(`/feed/${user.alias}`);
-        } catch (error) {
-          this.view.displayErrorMessage(
-            `Failed to register user because of exception: ${error}`,
-          );
-        } finally {
-          this.view.setIsLoading(false);
-        }
+        }, "register user")
+        
+        this.view.setIsLoading(false);
       };
     
 

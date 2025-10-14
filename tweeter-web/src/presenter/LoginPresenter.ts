@@ -17,7 +17,7 @@ export class LoginPresenter extends Presenter<LoginView>{
     }
     
     public async doLogin (alias:string, password:string, rememberMe:boolean, originalUrl:string) {
-      this.doFailureReportingOperation(async () => {
+      await this.doFailureReportingOperation(async () => {
         this.view.setIsLoading(true);
 
         const [user, authToken] = await this.loginService.login(alias, password);

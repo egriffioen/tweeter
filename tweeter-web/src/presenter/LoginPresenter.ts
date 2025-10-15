@@ -1,37 +1,31 @@
-import { User, AuthToken } from "tweeter-shared";
 import { LoginService } from "../model.service/LoginService";
-import { Presenter, View } from "./Presenter";
+import { AuthenticatePresenter, AuthenticateView } from "./AuthenticatePresenter";
 
-export interface LoginView extends View {
-    updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void
-    navigate:(path: string) => void;
-    setIsLoading(isLoading: boolean): void;
-}
+export class LoginPresenter extends AuthenticatePresenter<AuthenticateView>{
+    protected serviceFactory(): LoginService {
+      return new LoginService()
+    }
 
-export class LoginPresenter extends Presenter<LoginView>{
     private loginService: LoginService;
 
-    public constructor(view: LoginView) {
+    public constructor(view: AuthenticateView) {
         super(view);
         this.loginService = new LoginService();
     }
     
     public async doLogin (alias:string, password:string, rememberMe:boolean, originalUrl:string) {
-      await this.doFailureReportingOperation(async () => {
-        this.view.setIsLoading(true);
-
-        const [user, authToken] = await this.loginService.login(alias, password);
-
-        this.view.updateUserInfo(user, user, authToken, rememberMe);
-
-        if (!!originalUrl) {
+      await this.authenticateUser(
+        () => this.loginService.login(alias, password),
+        (user) => {
+          if (originalUrl) {
           this.view.navigate(originalUrl);
         } else {
           this.view.navigate(`/feed/${user.alias}`);
         }
-      }, "log user in")
-      
-      this.view.setIsLoading(false);
+        },
+        rememberMe,
+        "log in user"
+      );
     };
     
 

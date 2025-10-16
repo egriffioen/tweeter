@@ -28,9 +28,11 @@ export abstract class AuthenticatePresenter<V extends AuthenticateView|RegisterV
         this.view.updateUserInfo(user, user, authToken, rememberMe);
 
         navigateOperation(user)
-      }, itemDescription)
-      
-      this.view.setIsLoading(false);
+      }, itemDescription,
+      () => {
+        this.view.setIsLoading(false);
+      }
+    ) 
     }
 
 }

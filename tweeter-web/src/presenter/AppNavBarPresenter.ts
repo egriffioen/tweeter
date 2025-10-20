@@ -5,22 +5,24 @@ import { MessageView, Presenter } from "./Presenter";
 export interface AppNavBarView extends MessageView {
     clearUserInfo: () => void
     navigate(path: string): void;
-    getAuthToken(): AuthToken;
 }
 
 export class AppNavBarPresenter extends Presenter<AppNavBarView>{
-    private logoutService: LogoutService;
+    private _service: LogoutService;
 
     public constructor(view:AppNavBarView) {
       super(view)
-      this.logoutService = new LogoutService();
+      this._service = new LogoutService();
     }
 
-    public async logOut() {
+    public get service(){
+      return this._service;
+    }
+
+    public async logOut(authToken:AuthToken) {
         const loggingOutToastId = this.view.displayInfoMessage("Logging Out...", 0);
         await this.doFailureReportingOperation(async () => {
-          const authToken = this.view.getAuthToken();
-          await this.logoutService.logout(authToken!);
+          await this.service.logout(authToken!);
     
           this.view.deleteMessage(loggingOutToastId);
           this.view.clearUserInfo();

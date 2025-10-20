@@ -27,9 +27,7 @@ const AppNavbar = (props:Props) => {
     displayErrorMessage: displayErrorMessage,
     deleteMessage: deleteMessage,
     clearUserInfo: clearUserInfo,
-    navigate: navigate,
-    getAuthToken: () => authToken!,
-
+    navigate: navigate
   }
 
   const presenterRef = useRef<AppNavBarPresenter|null>(null)
@@ -38,7 +36,7 @@ const AppNavbar = (props:Props) => {
   }
 
   const logOut = async () => {
-    presenterRef.current!.logOut()
+    presenterRef.current!.logOut(authToken!)
   };
 
   return (

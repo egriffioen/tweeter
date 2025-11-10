@@ -1,3 +1,6 @@
 /node_modules
 /dist
 /node.js
+/layer/nodejs.zip
+/layer/nodejs
+/.aws-sam

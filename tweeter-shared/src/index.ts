@@ -19,6 +19,9 @@ export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItem
 export type { LoginRequest } from "./model/net/request/LoginRequest"
 export type { LogoutRequest } from "./model/net/request/LogoutRequest"
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest"
+export type { RegisterRequest } from "./model/net/request/RegisterRequest"
+export type { UserInfoRequest } from "./model/net/request/UserInfoRequest"
+export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest"
 
 
 //Responses
@@ -26,3 +29,6 @@ export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemRe
 export type { PagedStatusItemResponse } from "./model/net/response/PagedStatusItemResponse"
 export type { LoginResponse } from "./model/net/response/LoginResponse"
 export type { TweeterResponse } from "./model/net/response/TweeterResponse"
+export type { GetCountResponse } from "./model/net/response/GetCountResponse"
+export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse"
+export type { UpdateFollowResponse } from "./model/net/response/UpdateFollowResponse"

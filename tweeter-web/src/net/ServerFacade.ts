@@ -8,6 +8,7 @@ import {
   PagedUserItemRequest,
   PagedUserItemResponse,
   PostStatusRequest,
+  RegisterRequest,
   Status,
   TweeterResponse,
   User,
@@ -177,6 +178,27 @@ export class ServerFacade {
     // Handle errors    
     if (response.success) {
         return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async register(
+    request: RegisterRequest
+  ): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      LoginResponse
+    >(request, "/register");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.user == null) {
+        throw new Error(`No user found`);
+      } else {
+        return [User.fromDto(response.user)!, response.authToken];
+      }
     } else {
       console.error(response);
       throw new Error(response.message ?? undefined);

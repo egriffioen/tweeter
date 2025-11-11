@@ -209,6 +209,82 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
+
+          /register:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${registerFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /getIsFollowerStatus:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getIsFollowerStatusFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /followees/getCount:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFolloweeCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+          /followers/getCount:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowerCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /follow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${followFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+          /unfollow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${unFollowFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
             #
             # ADD MORE ENDPOINT DEFINITIONS HERE
             #
@@ -362,6 +438,88 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /postStatus
+            Method: POST
+
+  registerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: registerFunction
+      Handler: tweeter-server/src/lambda/login/RegisterLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /register
+            Method: POST
+
+  getIsFollowerStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getIsFollowerStatusFunction
+      Handler: tweeter-server/src/lambda/follow/GetIsFollowerStatusLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /getIsFollowerStatus
+            Method: POST
+
+  getFolloweeCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFolloweeCountFunction
+      Handler: tweeter-server/src/lambda/follow/GetFolloweeCountLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followees/getCount
+            Method: POST
+  getFollowerCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFollowerCountFunction
+      Handler: tweeter-server/src/lambda/follow/GetFollowerCountLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followers/getCount
+            Method: POST
+
+  followFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: followFunction
+      Handler: tweeter-server/src/lambda/follow/FollowLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /follow
+            Method: POST
+  unFollowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: unFollowFunction
+      Handler: tweeter-server/src/lambda/follow/UnFollowLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /unfollow
             Method: POST
 
   #

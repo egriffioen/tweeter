@@ -1,5 +1,8 @@
 import {
   AuthToken,
+  GetCountResponse,
+  GetIsFollowerStatusRequest,
+  GetIsFollowerStatusResponse,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
@@ -11,8 +14,10 @@ import {
   RegisterRequest,
   Status,
   TweeterResponse,
+  UpdateFollowResponse,
   User,
   UserDto,
+  UserInfoRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -142,7 +147,7 @@ export class ServerFacade {
       if (response.user == null) {
         throw new Error(`No user found`);
       } else {
-        return [User.fromDto(response.user)!, response.authToken];
+        return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
       }
     } else {
       console.error(response);
@@ -197,7 +202,118 @@ export class ServerFacade {
       if (response.user == null) {
         throw new Error(`No user found`);
       } else {
-        return [User.fromDto(response.user)!, response.authToken];
+        return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getIsFollowerStatus(
+    request: GetIsFollowerStatusRequest
+  ): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost<
+      GetIsFollowerStatusRequest,
+      GetIsFollowerStatusResponse
+    >(request, "/getIsFollowerStatus");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.isFollower == null) {
+        throw new Error(`Could not find follow status`);
+      } else {
+        return response.isFollower;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getFolloweeCount(
+    request: UserInfoRequest
+  ): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      UserInfoRequest,
+      GetCountResponse
+    >(request, "/followees/getCount");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.count == null) {
+        throw new Error(`Could not get Followee count`);
+      } else {
+        return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getFollowerCount(
+    request: UserInfoRequest
+  ): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      UserInfoRequest,
+      GetCountResponse
+    >(request, "/followers/getCount");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.count == null) {
+        throw new Error(`Could not get Follower count`);
+      } else {
+        return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async follow(
+    request: UserInfoRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      UserInfoRequest,
+      UpdateFollowResponse
+    >(request, "/follow");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.followeeCount == null) {
+        throw new Error(`Could not get Followee count`);
+      }
+      if (response.followerCount == null) {
+        throw new Error(`Could not get Follower count`);
+      } else {
+        return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async unfollow(
+    request: UserInfoRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      UserInfoRequest,
+      UpdateFollowResponse
+    >(request, "/unfollow");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.followeeCount == null) {
+        throw new Error(`Could not get Followee count`);
+      }
+      if (response.followerCount == null) {
+        throw new Error(`Could not get Follower count`);
+      } else {
+        return [response.followerCount, response.followeeCount];
       }
     } else {
       console.error(response);

@@ -7,6 +7,7 @@ import {
   PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
   Status,
   TweeterResponse,
   User,
@@ -155,6 +156,23 @@ export class ServerFacade {
       LogoutRequest,
       TweeterResponse
     >(request, "/logout");
+
+    // Handle errors    
+    if (response.success) {
+        return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async postStatus(
+    request: PostStatusRequest
+  ): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      TweeterResponse
+    >(request, "/postStatus");
 
     // Handle errors    
     if (response.success) {

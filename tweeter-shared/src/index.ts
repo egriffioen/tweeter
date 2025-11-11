@@ -18,6 +18,7 @@ export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequ
 export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItemRequest"
 export type { LoginRequest } from "./model/net/request/LoginRequest"
 export type { LogoutRequest } from "./model/net/request/LogoutRequest"
+export type { PostStatusRequest } from "./model/net/request/PostStatusRequest"
 
 
 //Responses

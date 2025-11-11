@@ -2,11 +2,13 @@ import {
   AuthToken,
   LoginRequest,
   LoginResponse,
+  LogoutRequest,
   PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   Status,
+  TweeterResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -140,6 +142,23 @@ export class ServerFacade {
       } else {
         return [User.fromDto(response.user)!, response.authToken];
       }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async logout(
+    request: LogoutRequest
+  ): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      LogoutRequest,
+      TweeterResponse
+    >(request, "/logout");
+
+    // Handle errors    
+    if (response.success) {
+        return;
     } else {
       console.error(response);
       throw new Error(response.message ?? undefined);

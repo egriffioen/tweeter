@@ -17,8 +17,11 @@ export type { StatusDto } from "./model/dto/StatusDto"
 export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequest"
 export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItemRequest"
 export type { LoginRequest } from "./model/net/request/LoginRequest"
+export type { LogoutRequest } from "./model/net/request/LogoutRequest"
+
 
 //Responses
 export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemResponse"
 export type { PagedStatusItemResponse } from "./model/net/response/PagedStatusItemResponse"
 export type { LoginResponse } from "./model/net/response/LoginResponse"
+export type { TweeterResponse } from "./model/net/response/TweeterResponse"

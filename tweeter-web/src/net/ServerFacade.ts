@@ -3,6 +3,8 @@ import {
   GetCountResponse,
   GetIsFollowerStatusRequest,
   GetIsFollowerStatusResponse,
+  GetUserRequest,
+  GetUserResponse,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
@@ -314,6 +316,27 @@ export class ServerFacade {
         throw new Error(`Could not get Follower count`);
       } else {
         return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getUser(
+    request: GetUserRequest
+  ): Promise<User> {
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/getUser");
+
+    // Handle errors    
+    if (response.success) {
+      if (response.user == null) {
+        throw new Error(`Could not get User`);
+      } else {
+        return User.fromDto(response.user)!;
       }
     } else {
       console.error(response);

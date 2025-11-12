@@ -22,6 +22,7 @@ export type { PostStatusRequest } from "./model/net/request/PostStatusRequest"
 export type { RegisterRequest } from "./model/net/request/RegisterRequest"
 export type { UserInfoRequest } from "./model/net/request/UserInfoRequest"
 export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest"
+export type { GetUserRequest } from "./model/net/request/GetUserRequest"
 
 
 //Responses
@@ -32,3 +33,4 @@ export type { TweeterResponse } from "./model/net/response/TweeterResponse"
 export type { GetCountResponse } from "./model/net/response/GetCountResponse"
 export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse"
 export type { UpdateFollowResponse } from "./model/net/response/UpdateFollowResponse"
+export type { GetUserResponse } from "./model/net/response/GetUserResponse"

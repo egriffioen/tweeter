@@ -97,32 +97,32 @@ Resources:
           #
           # Endpoint definitions
           #
-          /user/get:
-            post:
-              consumes: *commonConsumes
-              produces: *commonProduces
-              x-amazon-apigateway-integration:
-                type: aws
-                httpMethod: POST
-                uri:
-                  ##### Change "userGetFunction" to the actual function name.
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userGetFunction.Arn}/invocations
-                requestTemplates: *commonRequestTemplates
-                responses: *commonAmazonResponses
-              responses: *commonSwaggerResponses
-          /user/create:
-            post:
-              consumes: *commonConsumes
-              produces: *commonProduces
-              x-amazon-apigateway-integration:
-                type: aws
-                httpMethod: POST
-                uri:
-                  ##### Change "userCreateFunction" to the actual function name.
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
-                requestTemplates: *commonRequestTemplates
-                responses: *commonAmazonResponses
-              responses: *commonSwaggerResponses
+          # /user/get:
+          #   post:
+          #     consumes: *commonConsumes
+          #     produces: *commonProduces
+          #     x-amazon-apigateway-integration:
+          #       type: aws
+          #       httpMethod: POST
+          #       uri:
+          #         ##### Change "userGetFunction" to the actual function name.
+          #         Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userGetFunction.Arn}/invocations
+          #       requestTemplates: *commonRequestTemplates
+          #       responses: *commonAmazonResponses
+          #     responses: *commonSwaggerResponses
+          # /user/create:
+          #   post:
+          #     consumes: *commonConsumes
+          #     produces: *commonProduces
+          #     x-amazon-apigateway-integration:
+          #       type: aws
+          #       httpMethod: POST
+          #       uri:
+          #         ##### Change "userCreateFunction" to the actual function name.
+          #         Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
+          #       requestTemplates: *commonRequestTemplates
+          #       responses: *commonAmazonResponses
+          #     responses: *commonSwaggerResponses
           /followees/list:
             post:
               consumes: *commonConsumes
@@ -285,6 +285,19 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
+
+          /getUser:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
             #
             # ADD MORE ENDPOINT DEFINITIONS HERE
             #
@@ -314,35 +327,35 @@ Resources:
   #
   # Web API Lambda functions
   #
-  userGetFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: userGetFunction
-      ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserGetHandler.userGetHandler
-      Policies: *commonPolicies
-      Events:
-        PostApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref tweeterApi
-            Path: /user/get
-            Method: POST
+  # userGetFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: userGetFunction
+  #     ##### Modify Handler property to match your code.
+  #     Handler: handlers/users/UserGetHandler.userGetHandler
+  #     Policies: *commonPolicies
+  #     Events:
+  #       PostApi:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref tweeterApi
+  #           Path: /user/get
+  #           Method: POST
 
-  userCreateFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: userCreateFunction
-      ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserCreateHandler.userCreateHandler
-      Policies: *commonPolicies
-      Events:
-        PostApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref tweeterApi
-            Path: /user/create
-            Method: POST
+  # userCreateFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: userCreateFunction
+  #     ##### Modify Handler property to match your code.
+  #     Handler: handlers/users/UserCreateHandler.userCreateHandler
+  #     Policies: *commonPolicies
+  #     Events:
+  #       PostApi:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref tweeterApi
+  #           Path: /user/create
+  #           Method: POST
 
   getFolloweesFunction:
     Type: AWS::Serverless::Function
@@ -520,6 +533,20 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /unfollow
+            Method: POST
+
+  getUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUserFunction
+      Handler: tweeter-server/src/lambda/user/GetUserLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /getUser
             Method: POST
 
   #
